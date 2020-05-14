@@ -10,10 +10,10 @@ Organização das Sprints: [Trello do Grupo](https://trello.com/b/3lWb5x3S/inter
 
 ## Sumário
 
-* [Sobre o Projeto](#sobre_o_projeto)
+* [Sobre o Projeto](#sobre-o-projeto)
 * [Instalação](#instalação)
-* [Servidor de Desenvolvimento](#servidor_de_desenvolvimento)
-* [Rodar Testes Unitários](#rodar_testes_unitários)
+* [Servidor de Desenvolvimento](#servidor-de-desenvolvimento)
+* [Testes Unitários](#testes-unitários)
 * [Diagrama de Classe do Projeto](#diagrama-de-classe-do-projeto)
 * [Sobre o Tema do Trabalho](#sobre-o-tema-do-trabalho)
 
@@ -46,7 +46,7 @@ $ npm install
 Rodar `ng serve` para servidor.
 Navegue to `http://localhost:4200/`
 
-## Rodar Testes Unitários
+## Testes Unitários
 
 Rodar `ng test` para rodar testes unitários [Karma](https://karma-runner.github.io).
 
