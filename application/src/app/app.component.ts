@@ -80,6 +80,31 @@ export class AppComponent implements OnInit{
     }
   }
 
+  calculateCredits(phrase) {
+    let valor = '';
+    this.convertido = '';
+    phrase.forEach((item) => {
+      const moeda = this.currency.find((currency) => currency.key === item.toLowerCase());
+      if(moeda) {
+        valor += moeda.value
+        this.convertido += `${moeda.key} `;
+      }
+    });
+
+    const regex = /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
+    if (valor.match(regex)) {
+      this.isValid = true;
+      this.converterRomanosParaArabicos(valor);
+    } else {
+      this.isValid = false;
+    }
+  }
+
+  descobreValorRomano(valorRomano) {
+    const item = this.romanos.find((romano) => romano.key === valorRomano);
+    return item.value;
+  }
+  
   validaInsercaoMoeda(frase) {
     const index = this.buscaPosicaoPalavra(frase, 'vale');
     const chave = frase[index - 1];
