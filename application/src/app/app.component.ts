@@ -59,4 +59,25 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
   }
+
+  onSubmit() {
+    if (!this.form.valid) return;
+
+    const valorInput = this.form.get('inputQuestion').value;
+    const frase = valorInput.trim().split(' ');
+    const index = 0;
+    // const index = this.buscaPosicaoPalavra(frase, 'vale');
+
+    if(index !== -1 && frase[frase.length - 1] === '?') {
+      // É uma pergunta
+      this.isValid = true;
+      // this.calculateCredits(frase);
+    } else if (index !== -1){
+       // Inserir valor
+       this.isValid = true;
+      // this.validaInsercaoMoeda(frase);
+    } else {
+      this.isValid = false;
+    }
+  }
 }
