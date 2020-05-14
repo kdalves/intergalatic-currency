@@ -65,19 +65,51 @@ export class AppComponent implements OnInit{
 
     const valorInput = this.form.get('inputQuestion').value;
     const frase = valorInput.trim().split(' ');
-    const index = 0;
-    // const index = this.buscaPosicaoPalavra(frase, 'vale');
+    const index = this.buscaPosicaoPalavra(frase, 'vale');
 
     if(index !== -1 && frase[frase.length - 1] === '?') {
       // É uma pergunta
       this.isValid = true;
-      // this.calculateCredits(frase);
+      this.calculateCredits(frase);
     } else if (index !== -1){
        // Inserir valor
        this.isValid = true;
-      // this.validaInsercaoMoeda(frase);
+      this.validaInsercaoMoeda(frase);
     } else {
       this.isValid = false;
     }
+  }
+
+  validaInsercaoMoeda(frase) {
+    const index = this.buscaPosicaoPalavra(frase, 'vale');
+    const chave = frase[index - 1];
+    const valor = frase[index + 1];
+    if(chave?.length > 0 && valor?.length> 0) {
+      this.isValid = true;
+      this.inserirNovaMoeda(chave, valor);
+    } else {
+      this.isValid = false;
+    }
+  }
+
+  inserirNovaMoeda(chave, valor) {
+    const busca = this.buscarMoedaExistente(chave.toLowerCase());
+
+    if(busca === -1) {
+      this.currency.push({
+        key: chave.toLowerCase(),
+        value: valor.toUpperCase(),
+      });
+    } else {
+      this.currency[busca].value = valor;
+    }
+  }
+
+  buscarMoedaExistente(chave) {
+    return this.currency.findIndex((item) => item.key === chave);
+  }
+
+  buscaPosicaoPalavra(phrase, word): number {
+    return phrase.findIndex((palavra) => palavra === word);
   }
 }
