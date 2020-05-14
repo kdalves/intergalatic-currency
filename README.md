@@ -9,8 +9,9 @@ Grupo: **Ana Luiza Mattos, Gabriel Wagner, Glaucus Rossini, Kathleen Alves e Mat
 Organização das Sprints: [Trello do Grupo](https://trello.com/b/3lWb5x3S/intercoin-das-gal%C3%A1xias)
 
 ## Sumário
-* [Instalação](#instalação)
+
 * [Sobre o Projeto](#sobre_o_projeto)
+* [Instalação](#instalação)
 * [Diagrama de Classe do Projeto](#diagrama-de-classe-do-projeto)
 * [Sobre o Tema do Trabalho](#sobre-o-tema-do-trabalho)
 
