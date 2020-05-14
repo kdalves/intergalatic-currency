@@ -20,11 +20,33 @@ Organização das Sprints: [Trello do Grupo](https://trello.com/b/3lWb5x3S/inter
 Nosso projeto é uma aplicação em Angula e a proposta do professor não exigia criar banco de dados, servidor, ... E nem dividir em backend e frontend. A proposta era apresentar uma solução funcional, que fizesse o que foi pedido no [tema](#sobre-o-tema-do-trabalho), separando as tarefas em duas sprints e com divisão de tarefas para o grupo.
 
 ## Instalação
+- Entrar na pasta application:
 
-E utilizando uma IDE chamada VSCODE que pode ser baixada no [site oficial](https://code.visualstudio.com/download).
-Após baixar a IDE, instale no seu computador.
-Baixe o projeto esse projeto do GitHub no botão verde a direita no cabeçalho acima desse Readme.
-Abra o projeto no VSCODE e aperte no botão RUN para rodar localmente no seu navegador o projeto.
+- Instalar o Node.js:
+
+```bash
+$ sudo apt install nodejs
+```
+
+- Se voçe não tiver o @angular-cli
+```bash
+$ npm install -g @angular/cli
+```
+
+- Instalar `Package.json`:
+
+```bash
+$ npm install
+```
+
+## Servidor de desenvolvimento
+
+Rodar `ng serve` para servidor.
+Navegue to `http://localhost:4200/`
+
+## Rodar testes unitários
+
+Rodar `ng test` para rodar testes unitários [Karma](https://karma-runner.github.io).
 
 ## Diagrama de Classes do Projeto
 
