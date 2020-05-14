@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ICurrency, IRomano } from './models/currency.model';
+import getNumberRomans from './mocks/romans';
 
 @Component({
   selector: 'app-root',
@@ -25,36 +26,7 @@ export class AppComponent implements OnInit{
     this.currency = [];
     this.convertido = '';
     this.isValid = true;
-    this.romanos = [
-      {
-        key: 'I',
-        value: 1
-      },
-      {
-        key: 'V',
-        value: 5
-      },
-      {
-        key: 'X',
-        value: 10
-      },
-      {
-        key: 'L',
-        value: 50
-      },
-      {
-        key: 'C',
-        value: 100
-      },
-      {
-        key: 'D',
-        value: 500
-      },
-      {
-        key: 'M',
-        value: 1000
-      }
-    ];
+    this.romanos = getNumberRomans();
   }
 
   ngOnInit(): void {
@@ -66,7 +38,6 @@ export class AppComponent implements OnInit{
     const valorInput = this.form.get('inputQuestion').value;
     const frase = valorInput.trim().split(' ');
     const index = this.buscaPosicaoPalavra(frase, 'vale');
-
     if(index !== -1 && frase[frase.length - 1] === '?') {
       // É uma pergunta
       this.isValid = true;
@@ -129,7 +100,7 @@ export class AppComponent implements OnInit{
     const index = this.buscaPosicaoPalavra(frase, 'vale');
     const chave = frase[index - 1];
     const valor = frase[index + 1];
-    if(chave?.length > 0 && valor?.length> 0) {
+    if(chave?.length > 0 && valor?.length > 0) {
       this.isValid = true;
       this.inserirNovaMoeda(chave, valor);
     } else {

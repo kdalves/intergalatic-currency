@@ -1,7 +1,0 @@
-Projeto em React utilizando:
-- create-react-app
-- jest
-- styled-components
-- axios
-
-Design Pattern:
