@@ -1,5 +1,0 @@
-Projeto em Node utilizando:
-- jest
-Design Pattern:
-- Singleton
-- Middleware
