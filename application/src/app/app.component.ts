@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ICurrency, IRomano } from './models/currency.model';
-import getNumberRomans from './mocks/romans';
+import { CalcularService } from './services/calcular.service';
 
 @Component({
   selector: 'app-root',
@@ -13,119 +13,169 @@ export class AppComponent implements OnInit{
   form: FormGroup;
 
   currency: ICurrency[];
-  romanos: IRomano[];
+
+  exibir: boolean;
+  frase: string;
+  invalido: boolean;
+
   isValid: boolean;
   convertido: string;
 
   constructor(
     private formBuilder: FormBuilder,
+    private calcularService: CalcularService,
   ) {
     this.form = formBuilder.group({
       inputQuestion: [null, [Validators.required]],
     });
     this.currency = [];
-    this.convertido = '';
-    this.isValid = true;
-    this.romanos = getNumberRomans();
+    this.frase = '';
+    this.exibir = false;
+    this.invalido = false;
   }
 
   ngOnInit(): void {
   }
 
   onSubmit() {
-    if (!this.form.valid) return;
+    this.exibir = false;
+    this.invalido = false;
+
+    if (!this.form.valid) { return; }
 
     const valorInput = this.form.get('inputQuestion').value;
-    const frase = valorInput.trim().split(' ');
-    const index = this.buscaPosicaoPalavra(frase, 'vale');
-    if(index !== -1 && frase[frase.length - 1] === '?') {
-      // É uma pergunta
-      this.isValid = true;
-      this.calculateCredits(frase);
-    } else if (index !== -1){
-       // Inserir valor
-       this.isValid = true;
-      this.validaInsercaoMoeda(frase);
+    const frase = valorInput.toLowerCase().trim().split(' ');
+
+    if (this.isDescobrirValorCreditos(frase)) {
+
+      this.calcularCreditos(frase);
+
+    } else if (this.isDescobrirValorDesconhecido(frase)) {
+
+      this.calcularValorDesconhecido(frase);
+
+    } else if (this.isPerguntaValor(frase)){
+
+      this.calculaPerguntaValorConhecido(frase);
+
+    } else if (this.isInserirValor(frase)) {
+
+      const index = this.buscaPosicaoPalavra(frase, 'vale');
+      const chave = frase[index - 1];
+      const valor = frase[index + 1];
+
+      this.inserirNovaMoeda(chave, valor, true);
     } else {
-      this.isValid = false;
+      this.setarFraseInvalida();
     }
   }
 
-  calculateCredits(phrase) {
+  calculaPerguntaValorConhecido(frase) {
+    frase.pop();
+    const valores = frase.splice(this.buscaPosicaoPalavra(frase, 'vale') + 1);
+    const romanos = this.converteFraseParaRomano(valores);
+  }
+
+  calcularCreditos(frase: []) {
+    frase.pop();
+    const valores = frase.splice(this.buscaPosicaoPalavra(frase, 'tem') + 1);
+    const romanos = this.converteFraseParaRomano(valores);
+  }
+
+  concataArrayEmFrase(frase) {
+    let resposta = '';
+    frase.forEach(palavra => {
+      resposta += palavra + ' ';
+    });
+
+    return resposta;
+  }
+
+  calcularValorDesconhecido(frase: []) {
+    const numerico = frase[this.buscaPosicaoPalavra(frase, 'vale') + 1];
+    const desconhecido = frase[this.buscaPosicaoPalavra(frase, 'vale') - 1];
+
+    const valoresRomanos = frase.splice(0, this.buscaPosicaoPalavra(frase, 'vale') - 1);
+    const romanos = this.converteFraseParaRomano(valoresRomanos);
+  }
+
+  isDescobrirValorDesconhecido(frase: []) {
+    const vale = this.buscaPosicaoPalavra(frase, 'vale');
+    const creditos = this.buscaPosicaoPalavra(frase, 'créditos');
+
+    return vale !== -1 && creditos === frase.length - 1;
+  }
+
+  isDescobrirValorCreditos(frase: []) {
+    const credito = this.buscaPosicaoPalavra(frase, 'créditos');
+    const interrogacao = frase[frase.length - 1] === '?';
+
+    return credito !== -1 && interrogacao;
+  }
+
+  isPerguntaValor(frase) {
+    const index = this.buscaPosicaoPalavra(frase, 'vale');
+    return index !== -1 && frase[frase.length - 1] === '?';
+  }
+
+  isInserirValor(frase) {
+    const index = this.buscaPosicaoPalavra(frase, 'vale');
+    const chave = frase[index - 1];
+    const valor = frase[index + 1];
+    return chave?.length > 0 && valor?.length > 0;
+  }
+
+  converteFraseParaNaoRomano(frase) {
+    let valor = 1;
+    frase.forEach((item) => {
+      const moeda = this.currency.find((currency) => currency.chave === item && !currency.isRomano);
+      if (moeda) {
+        valor = valor * moeda.valor;
+      }
+    });
+    return valor;
+  }
+
+  converteFraseParaRomano(frase) {
     let valor = '';
-    this.convertido = '';
-    phrase.forEach((item) => {
-      const moeda = this.currency.find((currency) => currency.key === item.toLowerCase());
-      if(moeda) {
-        valor += moeda.value
-        this.convertido += `${moeda.key} `;
+    frase.forEach((item) => {
+      const moeda = this.currency.find((currency) => currency.chave === item && currency.isRomano);
+      if (moeda) {
+        valor += moeda.valor;
       }
     });
 
     const regex = /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
     if (valor.match(regex)) {
-      this.isValid = true;
-      this.converterRomanosParaArabicos(valor);
-    } else {
-      this.isValid = false;
+      return valor;
     }
   }
 
-  converterRomanosParaArabicos(valor) {
-    let creditos = 0;
-
-    for(let i=0,j=1; j<=valor.length; i++, j++) {
-      const valorI = this.descobreValorRomano(valor[i]);
-      let valorJ = 0;
-      if(valor[j]) {
-        valorJ = this.descobreValorRomano(valor[j]);
-      }
-      if(valorI >= valorJ) {
-        creditos += valorI;
-      } else if (valorI < valorJ) {
-        creditos += valorJ - valorI;
-        i++;j++;
-      }
-    }
-
-    this.convertido += `vale ${creditos}`; 
-  }
-
-  descobreValorRomano(valorRomano) {
-    const item = this.romanos.find((romano) => romano.key === valorRomano);
-    return item.value;
-  }
-
-  validaInsercaoMoeda(frase) {
-    const index = this.buscaPosicaoPalavra(frase, 'vale');
-    const chave = frase[index - 1];
-    const valor = frase[index + 1];
-    if(chave?.length > 0 && valor?.length > 0) {
-      this.isValid = true;
-      this.inserirNovaMoeda(chave, valor);
-    } else {
-      this.isValid = false;
-    }
-  }
-
-  inserirNovaMoeda(chave, valor) {
+  inserirNovaMoeda(chave, valor, isRomano) {
     const busca = this.buscarMoedaExistente(chave.toLowerCase());
 
-    if(busca === -1) {
+    if (busca === -1) {
       this.currency.push({
-        key: chave.toLowerCase(),
-        value: valor.toUpperCase(),
+        chave: chave.toLowerCase(),
+        valor: isRomano ? valor.toUpperCase() : valor,
+        isRomano,
       });
     } else {
-      this.currency[busca].value = valor;
+      this.currency[busca].valor = isRomano ? valor.toUpperCase() : valor;
     }
+    console.log(this.currency);
   }
 
   buscarMoedaExistente(chave) {
-    return this.currency.findIndex((item) => item.key === chave);
+    return this.currency.findIndex((item) => item.chave === chave);
   }
 
   buscaPosicaoPalavra(phrase, word): number {
     return phrase.findIndex((palavra) => palavra === word);
+  }
+
+  setarFraseInvalida() {
+    this.exibir = false;
+    this.invalido = true;
   }
 }

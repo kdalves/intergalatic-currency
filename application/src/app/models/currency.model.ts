@@ -1,6 +1,7 @@
 export interface ICurrency {
-  key: string;
-  value: string;
+  chave: string;
+  valor: any;
+  isRomano: boolean;
 }
 
 export interface IRomano {

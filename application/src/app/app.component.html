@@ -1,14 +1,14 @@
 <div data-component="main">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <input  
-        type="text" 
-        placeholder="Digite sua frase"
-        formControlName="inputQuestion"
-      >
-    <button>Enviar</button>
-    <br>
-    <span *ngIf="!isValid">Eu não tenho ideia do que você está falando</span>
-    <br>
-    <span *ngIf="isValid && convertido">{{convertido}}</span>
-  </form>
+  <div class="container">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <input
+          type="text"
+          placeholder="Digite sua frase"
+          formControlName="inputQuestion"
+        >
+      <button>Enviar</button>
+    </form>
+    <span class="invalido" *ngIf="invalido">Eu não tenho ideia do que você está falando</span>
+    <span class="exibir" *ngIf="exibir">{{frase}}</span>
+  </div>
 </div>
