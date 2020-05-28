@@ -50,11 +50,9 @@ Navegue to `http://localhost:4200/`
 
 Rodar `ng test` para rodar testes unitários [Karma](https://karma-runner.github.io).
 
-## Diagrama de Classes do Projeto
+## Diagrama de Classe do Projeto
 
-Primeira versão do diagrama de classes antes de rodar a primeira Sprint:
-
-![Diagrama de Classe 1](documents/class_diagram/diagrama_intercoin.jpg)
+![Diagrama de Classe](documents/class_diagram/diagrama_intercoin1.jpg)
 
 ## Sobre o Tema do Trabalho
 <details>
