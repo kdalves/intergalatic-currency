@@ -14,6 +14,7 @@ export class AppComponent implements OnInit{
 
   currency: ICurrency[];
 
+
   exibir: boolean;
   frase: string;
   invalido: boolean;
@@ -74,12 +75,22 @@ export class AppComponent implements OnInit{
     frase.pop();
     const valores = frase.splice(this.buscaPosicaoPalavra(frase, 'vale') + 1);
     const romanos = this.converteFraseParaRomano(valores);
+    const romanoConvertido = this.calcularService.converterRomanosParaArabicos(romanos);
+    this.frase = `${this.concataArrayEmFrase(valores)}vale ${romanoConvertido}`;
+    this.exibir = true;
   }
 
   calcularCreditos(frase: []) {
+    // Quantos créditos tem Dabu Swobu prata?
     frase.pop();
     const valores = frase.splice(this.buscaPosicaoPalavra(frase, 'tem') + 1);
     const romanos = this.converteFraseParaRomano(valores);
+    const romanoConvertido = this.calcularService.converterRomanosParaArabicos(romanos);
+    const creditos = this.converteFraseParaNaoRomano(valores);
+    const calculo = romanoConvertido * creditos;
+
+    this.frase = `${this.concataArrayEmFrase(valores)}vale ${calculo} créditos`;
+    this.exibir = true;
   }
 
   concataArrayEmFrase(frase) {
@@ -97,6 +108,9 @@ export class AppComponent implements OnInit{
 
     const valoresRomanos = frase.splice(0, this.buscaPosicaoPalavra(frase, 'vale') - 1);
     const romanos = this.converteFraseParaRomano(valoresRomanos);
+    const romanoConvertido = this.calcularService.converterRomanosParaArabicos(romanos);
+
+    this.inserirNovaMoeda(desconhecido, numerico / romanoConvertido, false);
   }
 
   isDescobrirValorDesconhecido(frase: []) {
