@@ -71,6 +71,7 @@ export class AppComponent implements OnInit{
     }
   }
 
+  // Quantos créditos tem Dabu Swobu prata?
   calculaPerguntaValorConhecido(frase) {
     frase.pop();
     const valores = frase.splice(this.buscaPosicaoPalavra(frase, 'vale') + 1);
