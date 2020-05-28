@@ -2,9 +2,12 @@ import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import getNumberRomans from './mocks/romans';
+import { CalcularService } from './services/calcular.service';
 
 describe('AppComponent', () => {
   let app;
+  let calcularService;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -15,6 +18,9 @@ describe('AppComponent', () => {
         ReactiveFormsModule,
       ]
     }).compileComponents();
+
+    calcularService = TestBed.get(CalcularService);
+    calcularService.converterRomanosParaArabicos = jasmine.createSpy('instant').and.returnValue(68);
     const fixture = TestBed.createComponent(AppComponent);
     app = fixture.componentInstance;
   }));
@@ -30,10 +36,132 @@ describe('AppComponent', () => {
   describe('Inicial value', () => {
     it('should initial values ​​must be set', () => {
       expect(app.currency).toEqual([]);
-      expect(app.convertido).toEqual('');
-      expect(app.isValid).toEqual(true);
-      expect(app.romanos).toEqual(getNumberRomans());
-    })
+      expect(app.frase).toEqual('');
+      expect(app.exibir).toEqual(false);
+      expect(app.invalido).toEqual(false);
+    });
+  });
+
+  describe('calculaPerguntaValorConhecido()', () => {
+    it('Calcula valor conhecido', () => {
+      app.concataArrayEmFrase = jasmine.createSpy().and.returnValue('Dabu Swobu ');
+      const frase = [
+        'Quantos',
+        'créditos',
+        'tem',
+        'Dabu',
+        'Swobu',
+      ];
+      app.exibir = false;
+      app.frase = '';
+
+      app.calculaPerguntaValorConhecido(frase);
+
+      expect(app.exibir).toEqual(true);
+      expect(app.frase).toEqual('Dabu Swobu vale 68');
+    });
+  });
+
+  describe('calcularCreditos()', () => {
+    it('Calcula valor desconhecido', () => {
+      app.concataArrayEmFrase = jasmine.createSpy().and.returnValue('Dabu Swobu prata ');
+      const frase = [
+        'Quantos',
+        'créditos',
+        'tem',
+        'Dabu',
+        'Swobu',
+        'prata'
+      ];
+      app.exibir = false;
+      app.frase = '';
+
+      app.calcularCreditos(frase);
+
+      expect(app.exibir).toEqual(true);
+      expect(app.frase).toEqual('Dabu Swobu prata vale 68 créditos');
+    });
+  });
+
+  describe('concataArrayEmFrase()', () => {
+    it('Deve concatenar a frase', () => {
+      const frase = [
+        'Quantos',
+        'créditos',
+        'tem',
+        'Dabu',
+        'Swobu',
+      ];
+
+      const retorno = app.concataArrayEmFrase(frase);
+
+      expect(retorno).toEqual('Quantos créditos tem Dabu Swobu ');
+    });
+  });
+
+  describe('isDescobrirValorDesconhecido()', () => {
+    it('Deve retornar true se a pergunta tiver vale e creditos', () => {
+      const frase = [
+        'Dabu',
+        'Dabu',
+        'prata',
+        'vale',
+        '34',
+        'créditos',
+      ];
+
+      const retorno = app.isDescobrirValorDesconhecido(frase);
+
+      expect(retorno).toEqual(true);
+    });
+  });
+
+  describe('isDescobrirValorCreditos()', () => {
+    it('Deve retornar true se a pergunta créditos e ponto de interrogação', () => {
+      const frase = [
+        'Quantos',
+        'créditos',
+        'tem',
+        'Dabu',
+        'Swobu',
+        'prata',
+        '?'
+      ];
+
+      const retorno = app.isDescobrirValorCreditos(frase);
+
+      expect(retorno).toEqual(true);
+    });
+  });
+
+  describe('isPerguntaValor()', () => {
+    it('Deve retornar true se a pergunta tiver vale e ponto de interrogação', () => {
+      const frase = [
+        'Quanto',
+        'vale',
+        'Loktar',
+        'Mokra',
+        'Dabu',
+        'Dabu',
+        '?'
+      ];
+      const retorno = app.isPerguntaValor(frase);
+
+      expect(retorno).toEqual(true);
+    });
+  });
+
+  describe('isInserirValor()', () => {
+    it('Deve retornar true se a tiver a palavra vale e um valor', () => {
+      const frase = [
+        'Dabu',
+        'vale',
+        'I',
+      ];
+      const retorno = app.isInserirValor(frase);
+
+      expect(retorno).toEqual(true);
+    });
   });
 
   describe('buscaPosicaoPalavra()', () => {
@@ -53,163 +181,17 @@ describe('AppComponent', () => {
     it('must return position 1 of the currency', () => {
       app.currency = [
         {
-          key: 'dabu',
-          value: 'I'
+          chave: 'dabu',
+          valor: 'I'
         },
         {
-          key: 'test',
-          value: 'V'
+          chave: 'test',
+          valor: 'V'
         },
       ];
       const position = app.buscarMoedaExistente('test');
 
       expect(position).toEqual(1);
-    });
-  });
-
-  describe('inserirNovaMoeda()', () => {
-    beforeEach(() => {
-      app.currency = [
-        {
-          key: 'dabu',
-          value: 'I'
-        },
-        {
-          key: 'test',
-          value: 'V'
-        },
-      ];
-    });
-
-    it('must insert new currency case she not exist', () => {
-      app.inserirNovaMoeda('currency', 'L');
-
-      expect(app.currency[2]).toEqual({
-        key: 'currency',
-        value: 'L'
-      });
-    });
-
-    it('must update new currency case she exist', () => {
-      app.inserirNovaMoeda('test', 'L');
-
-      expect(app.currency[1]).toEqual({
-        key: 'test',
-        value: 'L'
-      });
-    });
-  });
-
-  describe('validaInsercaoMoeda()', () => {
-    it('should not call the function if it does not contain a word before the vale and set isValid to false', () => {
-      const phrase = [
-        'vale',
-        'I'
-      ];
-      app.isValid = true;
-      app.inserirNovaMoeda = jasmine.createSpy();
-      app.buscaPosicaoPalavra = jasmine.createSpy().and.returnValue(0);
-      
-      app.validaInsercaoMoeda(phrase);
-
-      expect(app.inserirNovaMoeda).not.toHaveBeenCalled();
-      expect(app.isValid).toEqual(false);
-    });
-
-    it('should not call the function if it does not contain a word after the vale and set isValid to false', () => {
-      const phrase = [
-        'dabu',
-        'vale'
-      ];
-      app.isValid = true;
-      app.inserirNovaMoeda = jasmine.createSpy();
-      app.buscaPosicaoPalavra = jasmine.createSpy().and.returnValue(1);
-      
-      app.validaInsercaoMoeda(phrase);
-
-      expect(app.inserirNovaMoeda).not.toHaveBeenCalled();
-      expect(app.isValid).toEqual(false);
-    });
-
-     it('must call the function inserirNovaMoeda if phrase is ok', () => {
-      const phrase = [
-        'dabu',
-        'vale',
-        'I'
-      ];
-      app.isValid = false;
-      app.inserirNovaMoeda = jasmine.createSpy();
-      app.buscaPosicaoPalavra = jasmine.createSpy().and.returnValue(1);
-      
-      app.validaInsercaoMoeda(phrase);
-
-      expect(app.inserirNovaMoeda).toHaveBeenCalledWith('dabu', 'I');
-      expect(app.isValid).toEqual(true);
-    });
-  });
-
-  describe('descobreValorRomano()', () => {
-    it('must return value of number roman', () => {
-      const roman = app.descobreValorRomano('I');
-
-      expect(roman).toEqual(1);
-    });
-  });
-
-  describe('converterRomanosParaArabicos()', () => {
-    it('must convert number roman for arabic and set in convertido', () => {
-      app.convertido = '';
-
-      app.converterRomanosParaArabicos('VIII');
-
-      expect(app.convertido).toEqual('vale 8');
-    });
-  });
-
-  describe('calculateCredits()', () => {
-    beforeEach(() => {
-      app.currency = [
-        {
-          key: 'dabu',
-          value: 'I'
-        },
-        {
-          key: 'test',
-          value: 'V'
-        },
-      ];
-    })
-    it('must convert to phrase for roman, if number roman is valid and set isValid for true', () => {
-      const phrase = [
-        'test',
-        'dabu',
-        'dabu',
-      ];
-      app.isValid = false;
-      app.converterRomanosParaArabicos = jasmine.createSpy();
-
-      app.calculateCredits(phrase);
-
-      expect(app.converterRomanosParaArabicos).toHaveBeenCalled();
-      expect(app.convertido).toEqual('test dabu dabu ');
-      expect(app.isValid).toEqual(true);
-
-    });
-
-    it('must convert to phrase for roman, if number roman is invalid and set isValid for false', () => {
-      const phrase = [
-        'dabu',
-        'test',
-        'dabu',
-      ];
-      app.isValid = true;
-      app.converterRomanosParaArabicos = jasmine.createSpy();
-
-      app.calculateCredits(phrase);
-
-      expect(app.convertido).toEqual('dabu test dabu ');
-      expect(app.isValid).toEqual(false);
-      expect(app.converterRomanosParaArabicos).not.toHaveBeenCalled();
     });
   });
 });
