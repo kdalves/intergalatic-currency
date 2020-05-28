@@ -1,4 +1,6 @@
 <div data-component="main">
+  <h4>Intercoin</h4>
+  <h5>Desenvolvido por: Ana, Gabriel, Glaucus, Kathleen e Matias</h5>
   <div class="container">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <input
@@ -7,8 +9,8 @@
           formControlName="inputQuestion"
         >
       <button>Enviar</button>
+      <span class="invalido" *ngIf="invalido">Eu não tenho ideia do que você está falando</span>
+      <span class="exibir" *ngIf="exibir">{{frase}}</span>
     </form>
-    <span class="invalido" *ngIf="invalido">Eu não tenho ideia do que você está falando</span>
-    <span class="exibir" *ngIf="exibir">{{frase}}</span>
   </div>
 </div>

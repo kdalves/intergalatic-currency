@@ -178,7 +178,11 @@ export class AppComponent implements OnInit{
     } else {
       this.currency[busca].valor = isRomano ? valor.toUpperCase() : valor;
     }
-    console.log(this.currency);
+
+    this.form.get('inputQuestion').setValue('');
+
+    this.frase = 'Valor cadastrado';
+    this.exibir = true;
   }
 
   buscarMoedaExistente(chave) {
