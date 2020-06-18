@@ -9,7 +9,6 @@ module.exports = {
       const espaco = frase.length - 1 === index ? '' : ' ';
       resposta += palavra + espaco;
     });
-    console.log(resposta)
     return resposta;
   },
 

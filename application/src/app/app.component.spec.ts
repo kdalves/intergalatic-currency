@@ -3,7 +3,7 @@ import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MoedaService } from './services/moeda/moeda.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('AppComponent', () => {
   let app;
@@ -58,6 +58,13 @@ describe('AppComponent', () => {
 
       expect(retorno).toEqual(true);
     });
+    it('Deve retornar false se a pergunta estiver invalida', () => {
+      const frase = ['Ornitorrinco'];
+
+      const retorno = app.isDescobrirValorDesconhecido(frase);
+
+      expect(retorno).toEqual(false);
+    });
   });
 
   describe('isDescobrirValorCreditos()', () => {
@@ -76,6 +83,13 @@ describe('AppComponent', () => {
 
       expect(retorno).toEqual(true);
     });
+    it('Deve retornar false se a pergunta estiver invalida', () => {
+      const frase = ['Ornitorrinco'];
+
+      const retorno = app.isDescobrirValorCreditos(frase);
+
+      expect(retorno).toEqual(false);
+    });
   });
 
   describe('isPerguntaValor()', () => {
@@ -93,6 +107,13 @@ describe('AppComponent', () => {
 
       expect(retorno).toEqual(true);
     });
+    it('Deve retornar false se a pergunta estiver invalida', () => {
+      const frase = ['Ornitorrinco'];
+
+      const retorno = app.isPerguntaValor(frase);
+
+      expect(retorno).toEqual(false);
+    });
   });
 
   describe('isInserirValor()', () => {
@@ -105,6 +126,13 @@ describe('AppComponent', () => {
       const retorno = app.isInserirValor(frase);
 
       expect(retorno).toEqual(true);
+    });
+    it('Deve retornar false se a pergunta estiver invalida', () => {
+      const frase = ['Ornitorrinco'];
+
+      const retorno = app.isInserirValor(frase);
+
+      expect(retorno).toEqual(false);
     });
   });
 
@@ -135,6 +163,14 @@ describe('AppComponent', () => {
       expect(app.frase).toEqual('teste vale valor');
       expect(app.exibir).toEqual(true);
     });
+    it('deve exibir o erro caso falhe a requisição', () => {
+      moedaService.calcularValorConhecido =
+        jasmine.createSpy().and.returnValue(throwError(new Error('Fake error')));
+
+      app.calculaPerguntaValorConhecido('teste');
+
+      expect(app.erro).toEqual(true);
+    });
   });
 
   describe('calcularPergunta()', () => {
@@ -151,6 +187,14 @@ describe('AppComponent', () => {
       expect(app.frase).toEqual('teste vale valor créditos');
       expect(app.exibir).toEqual(true);
     });
+    it('deve exibir o erro caso falhe a requisição', () => {
+      moedaService.calcularPergunta =
+        jasmine.createSpy().and.returnValue(throwError(new Error('Fake error')));
+
+      app.calcularPergunta('teste');
+
+      expect(app.erro).toEqual(true);
+    });
   });
 
   describe('calcularCreditos()', () => {
@@ -163,6 +207,14 @@ describe('AppComponent', () => {
       expect(moedaService.calcularCreditos).toHaveBeenCalledWith('teste');
       expect(app.frase).toEqual('Valor cadastrado');
       expect(app.exibir).toEqual(true);
+    });
+    it('deve exibir o erro caso falhe a requisição', () => {
+      moedaService.calcularCreditos =
+        jasmine.createSpy().and.returnValue(throwError(new Error('Fake error')));
+
+      app.calcularCreditos('teste');
+
+      expect(app.erro).toEqual(true);
     });
   });
 
@@ -180,6 +232,14 @@ describe('AppComponent', () => {
         'teste', 'teste'
       ]);
     });
+    it('deve exibir o erro caso falhe a requisição', () => {
+      moedaService.listar =
+        jasmine.createSpy().and.returnValue(throwError(new Error('Fake error')));
+
+      app.listar();
+
+      expect(app.erro).toEqual(true);
+    });
   });
 
   describe('inserirNovaMoeda()', () => {
@@ -192,6 +252,14 @@ describe('AppComponent', () => {
       expect(moedaService.inserirValor).toHaveBeenCalledWith('teste');
       expect(app.frase).toEqual('Valor cadastrado');
       expect(app.exibir).toEqual(true);
+    });
+    it('deve exibir o erro caso falhe a requisição', () => {
+      moedaService.inserirValor =
+        jasmine.createSpy().and.returnValue(throwError(new Error('Fake error')));
+
+      app.inserirNovaMoeda('teste');
+
+      expect(app.erro).toEqual(true);
     });
   });
 });

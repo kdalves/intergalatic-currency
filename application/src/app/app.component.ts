@@ -14,6 +14,7 @@ export class AppComponent implements OnInit{
   exibir: boolean;
   frase: string;
   invalido: boolean;
+  erro: boolean;
   moedas: any[];
 
   constructor(
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit{
     this.moedas = [];
     this.exibir = false;
     this.invalido = false;
+    this.erro = false;
   }
 
   ngOnInit(): void {
@@ -35,6 +37,7 @@ export class AppComponent implements OnInit{
   onSubmit() {
     this.exibir = false;
     this.invalido = false;
+    this.erro = false;
 
     if (!this.form.valid) { return; }
 
@@ -68,6 +71,9 @@ export class AppComponent implements OnInit{
       .subscribe((resposta) => {
         this.frase = `${resposta.moedas} vale ${resposta.valor}`;
         this.exibir = true;
+      },
+      () => {
+        this.erro = true;
       });
   }
 
@@ -77,6 +83,9 @@ export class AppComponent implements OnInit{
       .subscribe((resposta) => {
         this.frase = `${resposta.moedas} vale ${resposta.valor} créditos`;
         this.exibir = true;
+      },
+      () => {
+        this.erro = true;
       });
   }
 
@@ -86,6 +95,9 @@ export class AppComponent implements OnInit{
       .subscribe(() => {
         this.frase = 'Valor cadastrado';
         this.exibir = true;
+      },
+      () => {
+        this.erro = true;
       });
   }
 
@@ -93,6 +105,9 @@ export class AppComponent implements OnInit{
     this.moedaService.listar()
       .subscribe(resposta => {
         this.moedas = resposta;
+      },
+      () => {
+        this.erro = true;
       });
   }
 
@@ -103,6 +118,9 @@ export class AppComponent implements OnInit{
         this.form.get('inputQuestion').setValue('');
         this.frase = 'Valor cadastrado';
         this.exibir = true;
+      },
+      () => {
+        this.erro = true;
       });
   }
 

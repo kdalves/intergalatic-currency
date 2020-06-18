@@ -16,6 +16,7 @@
           <button mat-raised-button color="primary">Enviar</button>
         </div>
       </form>
+      <span class="invalido" *ngIf="erro">Erro ao processar</span>
       <span class="invalido" *ngIf="invalido">Eu não tenho ideia do que você está falando</span>
       <span class="exibir" *ngIf="exibir">{{frase}}</span>
     </div>
