@@ -22,6 +22,8 @@ Organização das Sprints: [Trello do Grupo](https://trello.com/b/3lWb5x3S/inter
 Nosso projeto é uma aplicação em Angula e a proposta do professor não exigia criar banco de dados, servidor, ... E nem dividir em backend e frontend. A proposta era apresentar uma solução funcional, que fizesse o que foi pedido no [tema](#sobre-o-tema-do-trabalho), separando as tarefas em duas sprints e com divisão de tarefas para o grupo.
 
 ## Instalação
+
+FRONT-END
 - Entrar na pasta application:
 
 - Instalar o Node.js:
@@ -41,8 +43,25 @@ $ npm install -g @angular/cli
 $ npm install
 ```
 
-## Servidor de Desenvolvimento
+BACK-END
+- Entrar na pasta api:
 
+- Instalar o Node.js:
+
+```bash
+$ sudo apt install nodejs
+```
+- Instalar `Package.json`:
+
+```bash
+$ npm install
+```
+
+## Servidor de Desenvolvimento
+BACK-END
+Entrar na pasta api e rodar 'npm start'
+
+FRONT-END
 Rodar `ng serve` para servidor.
 Navegue to `http://localhost:4200/`
 
