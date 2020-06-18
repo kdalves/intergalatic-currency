@@ -1,12 +1,13 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import getNumberRomans from './mocks/romans';
-import { CalcularService } from './services/calcular.service';
+import { MoedaService } from './services/moeda/moeda.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { of } from 'rxjs';
 
 describe('AppComponent', () => {
   let app;
-  let calcularService;
+  let moedaService: MoedaService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -16,11 +17,11 @@ describe('AppComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
+        HttpClientTestingModule
       ]
     }).compileComponents();
 
-    calcularService = TestBed.get(CalcularService);
-    calcularService.converterRomanosParaArabicos = jasmine.createSpy('instant').and.returnValue(68);
+    moedaService = TestBed.get(MoedaService);
     const fixture = TestBed.createComponent(AppComponent);
     app = fixture.componentInstance;
   }));
@@ -35,67 +36,10 @@ describe('AppComponent', () => {
 
   describe('Inicial value', () => {
     it('should initial values ​​must be set', () => {
-      expect(app.currency).toEqual([]);
+      expect(app.moedas).toEqual([]);
       expect(app.frase).toEqual('');
       expect(app.exibir).toEqual(false);
       expect(app.invalido).toEqual(false);
-    });
-  });
-
-  describe('calculaPerguntaValorConhecido()', () => {
-    it('Calcula valor conhecido', () => {
-      app.concataArrayEmFrase = jasmine.createSpy().and.returnValue('Dabu Swobu ');
-      const frase = [
-        'Quantos',
-        'créditos',
-        'tem',
-        'Dabu',
-        'Swobu',
-      ];
-      app.exibir = false;
-      app.frase = '';
-
-      app.calculaPerguntaValorConhecido(frase);
-
-      expect(app.exibir).toEqual(true);
-      expect(app.frase).toEqual('Dabu Swobu vale 68');
-    });
-  });
-
-  describe('calcularCreditos()', () => {
-    it('Calcula valor desconhecido', () => {
-      app.concataArrayEmFrase = jasmine.createSpy().and.returnValue('Dabu Swobu prata ');
-      const frase = [
-        'Quantos',
-        'créditos',
-        'tem',
-        'Dabu',
-        'Swobu',
-        'prata'
-      ];
-      app.exibir = false;
-      app.frase = '';
-
-      app.calcularCreditos(frase);
-
-      expect(app.exibir).toEqual(true);
-      expect(app.frase).toEqual('Dabu Swobu prata vale 68 créditos');
-    });
-  });
-
-  describe('concataArrayEmFrase()', () => {
-    it('Deve concatenar a frase', () => {
-      const frase = [
-        'Quantos',
-        'créditos',
-        'tem',
-        'Dabu',
-        'Swobu',
-      ];
-
-      const retorno = app.concataArrayEmFrase(frase);
-
-      expect(retorno).toEqual('Quantos créditos tem Dabu Swobu ');
     });
   });
 
@@ -177,21 +121,77 @@ describe('AppComponent', () => {
     });
   });
 
-  describe('buscarMoedaExistente()', () => {
-    it('must return position 1 of the currency', () => {
-      app.currency = [
-        {
-          chave: 'dabu',
-          valor: 'I'
-        },
-        {
-          chave: 'test',
-          valor: 'V'
-        },
-      ];
-      const position = app.buscarMoedaExistente('test');
+  describe('calculaPerguntaValorConhecido()', () => {
+    it('deve chamar o calcularValorConhecido', () => {
+      moedaService.calcularValorConhecido =
+        jasmine.createSpy().and.returnValue(of({
+          moedas: 'teste',
+          valor: 'valor'
+        }));
 
-      expect(position).toEqual(1);
+      app.calculaPerguntaValorConhecido('teste');
+
+      expect(moedaService.calcularValorConhecido).toHaveBeenCalledWith('teste');
+      expect(app.frase).toEqual('teste vale valor');
+      expect(app.exibir).toEqual(true);
+    });
+  });
+
+  describe('calcularPergunta()', () => {
+    it('deve chamar o calcularPergunta', () => {
+      moedaService.calcularPergunta =
+        jasmine.createSpy().and.returnValue(of({
+          moedas: 'teste',
+          valor: 'valor'
+        }));
+
+      app.calcularPergunta('teste');
+
+      expect(moedaService.calcularPergunta).toHaveBeenCalledWith('teste');
+      expect(app.frase).toEqual('teste vale valor créditos');
+      expect(app.exibir).toEqual(true);
+    });
+  });
+
+  describe('calcularCreditos()', () => {
+    it('deve chamar o calcularCreditos', () => {
+      moedaService.calcularCreditos =
+        jasmine.createSpy().and.returnValue(of({}));
+
+      app.calcularCreditos('teste');
+
+      expect(moedaService.calcularCreditos).toHaveBeenCalledWith('teste');
+      expect(app.frase).toEqual('Valor cadastrado');
+      expect(app.exibir).toEqual(true);
+    });
+  });
+
+  describe('listar()', () => {
+    it('deve chamar o listar', () => {
+      moedaService.listar =
+        jasmine.createSpy().and.returnValue(of([
+          'teste', 'teste'
+        ]));
+
+      app.listar();
+
+      expect(moedaService.listar).toHaveBeenCalled();
+      expect(app.moedas).toEqual([
+        'teste', 'teste'
+      ]);
+    });
+  });
+
+  describe('inserirNovaMoeda()', () => {
+    it('deve chamar o inserirValor', () => {
+      moedaService.inserirValor =
+        jasmine.createSpy().and.returnValue(of({}));
+
+      app.inserirNovaMoeda('teste');
+
+      expect(moedaService.inserirValor).toHaveBeenCalledWith('teste');
+      expect(app.frase).toEqual('Valor cadastrado');
+      expect(app.exibir).toEqual(true);
     });
   });
 });
