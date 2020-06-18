@@ -74,7 +74,7 @@ Rodar `ng test` para rodar testes unitários [Karma](https://karma-runner.github
 
 ## Diagrama de Classe do Projeto
 
-![Diagrama de Classe](documents/class_diagram/diagrama_intercoin1.jpg)
+![Diagrama de Classe](documents/class_diagram/diagrama_intercoin_final.jpg)
 
 ## Sobre o Tema do Trabalho
 <details>
@@ -124,67 +124,3 @@ Rodar `ng test` para rodar testes unitários [Karma](https://karma-runner.github
   Dabu Swobu ouro vale 57800 Créditos 
   Dabu Swobu ferro vale 782 créditos 
   Eu não tenho ideia do que você está falando
-</detail>
-<p align="center">
-  <h3 align="center">Test MiniNetflix</h3>
-</p>
-
-## About the project
-
-This project aims to create an inspired by application on Netflix. This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.7.
-
-
-### Installation
-Enter the folderapplication
-
-- Install Node.js:
-
-```bash
-$ sudo apt install nodejs
-```
-
-- If you don't have @angular-cli
-```bash
-$ npm install -g @angular/cli
-```
-
-- Install `Package.json` content:
-
-```bash
-$ npm install
-```
-
-### Development server
-
-Run `ng serve` for a dev server.
-Navigate to `http://localhost:4200/`
-
-### Test users
-
-Users to use the application
-
-```bash
-id: 1
-name: Usuario 1 de teste
-e-mail: testeum@teste.com
-password: 123456
-```
-
-```bash
-id: 2
-name: Usuario 2 de teste
-e-mail: testedois@teste.com
-password: 123456
-```
-
-### Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-### Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-### Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
