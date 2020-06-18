@@ -59,14 +59,17 @@ $ npm install
 
 ## Servidor de Desenvolvimento
 BACK-END
-Entrar na pasta api e rodar 'npm start'
+Entrar na pasta api e rodar `npm start`
 
 FRONT-END
 Rodar `ng serve` para servidor.
 Navegue to `http://localhost:4200/`
 
 ## Testes Unitários
+BACK-END
+Entrar na pasta api e rodar `npm test`
 
+FRONT-END
 Rodar `ng test` para rodar testes unitários [Karma](https://karma-runner.github.io).
 
 ## Diagrama de Classe do Projeto
